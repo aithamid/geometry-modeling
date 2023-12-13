@@ -46,7 +46,7 @@ Run the project with `Ctrl + F5`
 
 ### Simplification
 
-<img src="images/Simplification.png" width="500">
+<img src="images/SimplificationAfter.png" width="500">
 
 ### Silhouette
 

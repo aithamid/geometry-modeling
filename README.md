@@ -1,9 +1,3 @@
-<style type="text/css">
-    img {
-        width: 400px;
-    }
-</style>
-
 # Geometry modeling project
 
 This school project is in C++. I did during my 4th year at ESIEE Paris to validate the Geometry Modeling unit. This project was very good to introduce us to this field and help me to understand better the halfedge structure.
@@ -41,23 +35,23 @@ Run the project with `Ctrl + F5`
 
 ### ReadFile
 
-![ReadFile photo](images/ReadFile.png "ReadFile")
+![ReadFile photo](images/ReadFile.png =250x "ReadFile")
 
 ### ComputeNormals
 
-![ComputeNormals photo](images/ComputeNormals.png "ComputeNormals")
+![ComputeNormals photo](images/ComputeNormals.png =250x "ComputeNormals")
 
 ### Triangulate
 
-![Triangulate photo](images/Triangulate.png "Triangulate")
+![Triangulate photo](images/Triangulate.png =250x "Triangulate")
 
 ### Simplification
 
-![Simplification photo](images/SimplificationAfter.png "Simplification")
+![Simplification photo](images/SimplificationAfter.png =250x "Simplification")
 
 ### Silhouette
 
-![Silhouette photo](images/Silhouette.png "Silhoutte")
+![Silhouette photo](images/Silhouette.png =250x "Silhoutte")
 
 ### Catmull-Clark
 

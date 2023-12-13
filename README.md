@@ -1,3 +1,9 @@
+<style type="text/css">
+    img {
+        width: 400px;
+    }
+</style>
+
 # Geometry modeling project
 
 This school project is in C++. I did during my 4th year at ESIEE Paris to validate the Geometry Modeling unit. This project was very good to introduce us to this field and help me to understand better the halfedge structure.

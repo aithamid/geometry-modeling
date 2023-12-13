@@ -31,6 +31,8 @@ Run the project with `Ctrl + F5`
 
 ### Tests
 
+Tests were be helpful :green_circle: 
+
 ## Work
 
 ### ReadFile

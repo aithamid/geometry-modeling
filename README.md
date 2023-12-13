@@ -22,17 +22,16 @@ Run the project with `Ctrl + F5`
 
 | Name  |  Succeed | Difficulty (4 me) | Tests passed |
 |---|---|---|---|
-| ReadFile |  Yes       | Hard  |   |
-| Tringulate  | Yes     |  Medium |   |
-| Simplification | Yes  |  Medium |   |
-| ComputsNormals | Yes  |  Easy |   |
-| Silhouette | Yes      |  Easy |   |
-| Catmull-Clark | Yes   |  - |   |
+| ReadFile |  Yes       | Hard      |:green_circle:|
+| Tringulate  | Yes     |  Medium   |:green_circle:|
+| Simplification | Yes  |  Medium   |:green_circle:|
+| ComputsNormals | Yes  |  Easy     |:green_circle:|
+| Silhouette | Yes      |  Easy     |:green_circle:|
+| Catmull-Clark | Yes   |  -        |:green_circle:|
 
 ### Tests
 
-Tests were be helpful :green_circle: 
-
+Tests were be helpful 
 ## Work
 
 ### ReadFile

@@ -35,23 +35,22 @@ Run the project with `Ctrl + F5`
 
 ### ReadFile
 
-![ReadFile photo](images/ReadFile.png =250x "ReadFile")
+<img src="images/ReadFile.png" width="500">
 
 ### ComputeNormals
-
-![ComputeNormals photo](images/ComputeNormals.png =250x "ComputeNormals")
+<img src="images/ComputeNormals.png" width="500">
 
 ### Triangulate
 
-![Triangulate photo](images/Triangulate.png =250x "Triangulate")
+<img src="images/Triangulate.png" width="500">
 
 ### Simplification
 
-![Simplification photo](images/SimplificationAfter.png =250x "Simplification")
+<img src="images/Simplification.png" width="500">
 
 ### Silhouette
 
-![Silhouette photo](images/Silhouette.png =250x "Silhoutte")
+<img src="images/Silhouette.png" width="500">
 
 ### Catmull-Clark
 

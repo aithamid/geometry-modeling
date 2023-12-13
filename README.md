@@ -31,7 +31,7 @@ Run the project with `Ctrl + F5`
 
 ### Tests
 
-Tests were be helpful 
+Tests were be helpful to 
 ## Work
 
 ### ReadFile

@@ -31,18 +31,31 @@ Run the project with `Ctrl + F5`
 
 ### Tests
 
-Tests were be helpful to 
 ## Work
 
 ### ReadFile
 
-### Triangulate
-
-### Simplification
+![ReadFile photo](images/ReadFile.png "ReadFile")
 
 ### ComputeNormals
 
+![ComputeNormals photo](images/ComputeNormals.png "ComputeNormals")
+
+### Triangulate
+
+![Triangulate photo](images/Triangulate.png "Triangulate")
+
+### Simplification
+
+![Simplification photo](images/SimplificationAfter.png "Simplification")
+
+### Silhouette
+
+![Silhouette photo](images/Silhouette.png "Silhoutte")
+
 ### Catmull-Clark
+
+No photo for the moment
 
 
 

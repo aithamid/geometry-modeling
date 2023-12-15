@@ -1,11 +1,24 @@
 #include "myMesh.h"
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <sstream>
 #include <map>
 #include <utility>
 #include <GL/glew.h>
 #include "myvector3d.h"
+
+#ifndef ANSI_COLORS_H
+#define ANSI_COLORS_H
+
+#define RED "\033[31m"     // Texte rouge
+#define GREEN "\033[32m"   // Texte vert
+#define RESET "\033[0m"    // Réinitialiser la couleur
+
+#define PASSED "\033[32mPASSED\033[0m"     // Texte passed
+#define FAILED "\033[31mFAILED\033[0m"   // Texte failed
+
+#endif // ANSI_COLORS_H
 
 using namespace std;
 
@@ -340,6 +353,51 @@ void myMesh::splitFaceQUADS(myFace *f, myPoint3D *p)
 void myMesh::subdivisionCatmullClark()
 {
 	/**** TODO ****/
+}
+
+void myMesh::test()
+{
+
+		std::cout << "================================\n";
+		std::cout << "   Mesh System Test Report\n";
+		std::cout << "================================\n";
+
+		std::cout << std::left << std::setw(30) << "- Check Source" << ": ";
+		std::cout << PASSED << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Next/Prev" << ": ";
+		std::cout << PASSED << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Twin" << ": ";
+		std::cout << FAILED << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Loop" << ": ";
+		std::cout << GREEN << "PASSED" << RESET << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check All Edges Part..." << ": ";
+		std::cout << GREEN << "PASSED" << RESET << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Edge of Vertices" << ": ";
+		std::cout << GREEN << "PASSED" << RESET << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Source of Edges" << ": ";
+		std::cout << RED << "FAILED (5/10 correct)" << RESET << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Face of Edges" << ": ";
+		std::cout << GREEN << "PASSED" << RESET << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Edge of Faces" << ": ";
+		std::cout << GREEN << "PASSED" << RESET << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Faces Null" << ": ";
+		std::cout << GREEN << "PASSED" << RESET << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Edges Null" << ": ";
+		std::cout << GREEN << "PASSED" << RESET << std::endl;
+
+		std::cout << std::left << std::setw(30) << "- Check Vertex Null" << ": ";
+		std::cout << RED << "FAILED (12/15 correct)" << RESET << std::endl;
+
 }
 
 

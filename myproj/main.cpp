@@ -1,4 +1,4 @@
-#include <fstream>
+﻿#include <fstream>
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <sstream>
@@ -52,7 +52,8 @@ void menu(int item)
 		}
 	case MENU_HELLOTEST:
 		{
-		cout << "test" << endl;
+		m->test();
+		makeBuffers(m);
 		break;
 		}
 	case MENU_SIMPLIFY:

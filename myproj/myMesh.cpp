@@ -81,6 +81,7 @@ bool myMesh::readFile(std::string filename)
 	{
 		stringstream myline(s);
 		myline >> t;
+		int index = 0;
 		if (t == "g") {}
 		else if (t == "v")
 		{
@@ -100,28 +101,31 @@ bool myMesh::readFile(std::string filename)
 			cout << "f";
 			cout << endl;
 			myFace* f = new myFace(); // allocate the new face
+			f->index = index;
+			index++;
 			faceids.clear();
 
 			while (myline >> u) {
-
-				int faceID = atoi((u.substr(0, u.find("/"))).c_str()) - 1;
+				
+				int faceID = atoi((u.substr(0, u.find("/"))).c_str()) -1;
+			
 				faceids.push_back(faceID);
-
+					
 				cout << " " << faceID << endl;
-
-			}
+				
+			}	
 			if (faceids.size() < 3) {
 				continue;
 				// ignore degenerate faces
 			}
-
+			
 			hedges = new myHalfedge * [faceids.size()]; // allocate the array for storing pointers to half-edges
 			for (unsigned int i = 0; i < faceids.size(); i++) {
 				hedges[i] = new myHalfedge(); // pre-allocate new half-edges
 				hedges[i]->source = vertices[faceids[i]];
-				hedges[i]->adjacent_face = f;
+				
 			}
-
+			
 			f->adjacent_halfedge = hedges[0]; // connect the face with incident edge
 
 			for (unsigned int i = 0; i < faceids.size(); i++)
@@ -135,12 +139,12 @@ bool myMesh::readFile(std::string filename)
 
 				hedges[i]->next = hedges[iplusone];
 				hedges[i]->prev = hedges[iminusone];
-
+				hedges[i]->adjacent_face = f;
+				hedges[i]->index = i;
 
 				it = twin_map.find(make_pair(faceids[iplusone], faceids[i]));
 				if (it == twin_map.end()) {
 					twin_map[make_pair(faceids[i], faceids[iplusone])] = hedges[i];
-
 				}
 				else
 				{
@@ -148,29 +152,25 @@ bool myMesh::readFile(std::string filename)
 					it->second->twin = hedges[i];
 				}
 				// set originof
-				vertices[faceids[i]]->originof = hedges[0];
+				
+				vertices[faceids[i]]->originof = hedges[i];
 
 				// push edges to halfedges in myMesh
 				halfedges.push_back(hedges[i]);
-
-
-
+			
 			}
 			// push face to faces in myMesh
 			faces.push_back(f);
 		}
-
-
-		//nbVerInFaceTab.push_back(nbVerInFace);
-		//cout << "nb: " << nbVerInFace << endl;
-		//nbVerInFace = 0;
-	}
+			//nbVerInFaceTab.push_back(nbVerInFace);
+			//cout << "nb: " << nbVerInFace << endl;
+			//nbVerInFace = 0;
+		}
 	checkMesh();
 	normalize();
-	
+
 	return true;
 }
-
 
 void myMesh::computeNormals()
 {
@@ -357,13 +357,23 @@ void myMesh::subdivisionCatmullClark()
 
 void myMesh::test()
 {
-
+		bool tmp;
+		
 		std::cout << "================================\n";
 		std::cout << "   Mesh System Test Report\n";
 		std::cout << "================================\n";
 
 		std::cout << std::left << std::setw(30) << "- Check Source" << ": ";
-		std::cout << PASSED << std::endl;
+		tmp = false;
+		for(auto * hg : halfedges)
+		{
+			if (hg->source == nullptr)
+			{
+				tmp = false;
+				break;
+			}
+		}
+		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
 		std::cout << std::left << std::setw(30) << "- Check Next/Prev" << ": ";
 		std::cout << PASSED << std::endl;

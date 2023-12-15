@@ -20,22 +20,23 @@ myVertex::~myVertex(void)
 
 void myVertex::computeNormal()
 {
-	const auto* start = originof->adjacent_face->adjacent_halfedge;
+	const auto* start = originof;
 	auto* current = start;
 	myVector3D tmp(0,0,0);
 	int i = 0;
 	do
 	{
 		i++;
-		tmp.dX += current->adjacent_face->normal->dX;
-		tmp.dY += current->adjacent_face->normal->dY;
-		tmp.dZ += current->adjacent_face->normal->dZ;
+		tmp += *current->adjacent_face->normal;
 		current = current->twin->next;
 	} while (current != start);
 	std::cout << "Number of faces : " << i << std::endl;
-
+	if(i > 0)
+	{
+		tmp = tmp / static_cast<double>(i);
+	}
 	tmp.normalize();
-	normal = new myVector3D(tmp.dX, tmp.dY, tmp.dZ);
+	*normal = tmp;
 }
 
 /*

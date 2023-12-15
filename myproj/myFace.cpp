@@ -24,7 +24,7 @@ void myFace::computeNormal()
     auto* p2 = adjacent_halfedge->prev->source->point;
     auto* p3 = (adjacent_halfedge->next)->source->point;
 
-    auto vect1 = *p3 - *p1;
+    auto vect1 = *p1 - *p3;
     auto vect2 = *p1 - *p2;
 
     myVector3D tmp = vect1.crossproduct(vect2);

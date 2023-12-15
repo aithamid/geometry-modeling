@@ -29,7 +29,7 @@ void myFace::computeNormal()
 
     myVector3D tmp = vect1.crossproduct(vect2);
     tmp.normalize();
-    *(normal) = tmp;
+    *normal = tmp;
 }
 
 bool myFace::checkAllEdgespartofFace()

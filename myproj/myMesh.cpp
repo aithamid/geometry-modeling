@@ -363,11 +363,12 @@ void myMesh::test()
 		std::cout << "   Mesh System Test Report\n";
 		std::cout << "================================\n";
 
-		std::cout << std::left << std::setw(30) << "- Check Source" << ": ";
-		tmp = false;
-		for(auto * hg : halfedges)
+		std::cout << std::endl << "Vertices"<< std::endl;
+		std::cout << std::left << std::setw(50) << "- Check if has a correct origin half-edge" << ": ";
+		tmp = true;
+		for (auto* v : vertices)
 		{
-			if (hg->source == nullptr)
+			if (v->originof == nullptr || std::find(halfedges.begin(), halfedges.end(), v->originof) == halfedges.end())
 			{
 				tmp = false;
 				break;
@@ -375,38 +376,98 @@ void myMesh::test()
 		}
 		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
-		std::cout << std::left << std::setw(30) << "- Check Next/Prev" << ": ";
-		std::cout << PASSED << std::endl;
 
-		std::cout << std::left << std::setw(30) << "- Check Twin" << ": ";
-		std::cout << FAILED << std::endl;
+		std::cout << std::endl << "Half-edges" << std::endl;
+		std::cout << std::left << std::setw(50) << "- Check if has a correct source vertex" << ": ";
+		tmp = true;
+		for (auto* hg : halfedges)
+		{
+			if (hg->source == nullptr || std::find(vertices.begin(), vertices.end(), hg->source) == vertices.end())
+			{
+				tmp = false;
+				break;
+			}
+		}
+		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
-		std::cout << std::left << std::setw(30) << "- Check Loop" << ": ";
-		std::cout << GREEN << "PASSED" << RESET << std::endl;
+		std::cout << std::left << std::setw(50) << "- Check if has a correct adjacent face" << ": ";
+		tmp = true;
+		for (auto* hg : halfedges)
+		{
+			if (hg->adjacent_face == nullptr || std::find(faces.begin(), faces.end(), hg->adjacent_face) == faces.end())
+			{
+				tmp = false;
+				break;
+			}
+		}
+		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
-		std::cout << std::left << std::setw(30) << "- Check All Edges Part..." << ": ";
-		std::cout << GREEN << "PASSED" << RESET << std::endl;
+		std::cout << std::left << std::setw(50) << "- Check Next/Prev Link" << ": ";
+		tmp = true;
+		for (auto he : halfedges)
+		{
+			if(!(he->next->prev == he && he->prev->next == he))
+			{
+				tmp = false;
+				break;
+			}
+		}
+		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
-		std::cout << std::left << std::setw(30) << "- Check Edge of Vertices" << ": ";
-		std::cout << GREEN << "PASSED" << RESET << std::endl;
+		std::cout << std::left << std::setw(50) << "- Check Twin Link" << ": ";
+		tmp = true;
+		for (auto it = halfedges.begin(); it != halfedges.end(); it++)
+		{
+			if ((*it)->twin == NULL)
+			{
+				tmp = false;
+				break;
+			}
+		}
+		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
-		std::cout << std::left << std::setw(30) << "- Check Source of Edges" << ": ";
-		std::cout << RED << "FAILED (5/10 correct)" << RESET << std::endl;
+		std::cout << std::left << std::setw(50) << "- Check Loop" << ": ";
+		tmp = true;
+		for(auto he : halfedges)
+		{
+			int i, n = 20; // "n" is a variable to be considered a loop
+			auto* current = he->next;
+			for (i = 0; current != he && i < n; i++)
+			{
+				current = current->next;
+			}
+			if (i > n)
+			{
+				tmp = false;
+				break;
+			}
+		}
+		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
-		std::cout << std::left << std::setw(30) << "- Check Face of Edges" << ": ";
-		std::cout << GREEN << "PASSED" << RESET << std::endl;
+		std::cout << std::endl << "Faces" << std::endl;
+		std::cout << std::left << std::setw(50) << "- Check if all faces have an adjacent half-edge" << ": ";
+		tmp = true;
+		for (auto* f : faces)
+		{
+			if (f->adjacent_halfedge == nullptr || std::find(halfedges.begin(), halfedges.end(), f->adjacent_halfedge) == halfedges.end())
+			{
+				tmp = false;
+				break;
+			}
+		}
+		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
-		std::cout << std::left << std::setw(30) << "- Check Edge of Faces" << ": ";
-		std::cout << GREEN << "PASSED" << RESET << std::endl;
-
-		std::cout << std::left << std::setw(30) << "- Check Faces Null" << ": ";
-		std::cout << GREEN << "PASSED" << RESET << std::endl;
-
-		std::cout << std::left << std::setw(30) << "- Check Edges Null" << ": ";
-		std::cout << GREEN << "PASSED" << RESET << std::endl;
-
-		std::cout << std::left << std::setw(30) << "- Check Vertex Null" << ": ";
-		std::cout << RED << "FAILED (12/15 correct)" << RESET << std::endl;
+		std::cout << std::left << std::setw(50) << "- Check if an adjacent h-e has good adjacent face" << ": ";
+		tmp = true;
+		for (auto* f : faces)
+		{
+			if (f->adjacent_halfedge->adjacent_face != f)
+			{
+				tmp = false;
+				break;
+			}
+		}
+		std::cout << (tmp ? PASSED : FAILED) << std::endl;
 
 }
 

@@ -30,7 +30,6 @@ void myVertex::computeNormal()
 		tmp += *current->adjacent_face->normal;
 		current = current->twin->next;
 	} while (current != start);
-	std::cout << "Number of faces : " << i << std::endl;
 	if(i > 0)
 	{
 		tmp = tmp / static_cast<double>(i);

@@ -1,7 +1,19 @@
+# Executable and Object files
+*.exe
+*.dll
+*.so
+*.o
+*.obj
+*.pdb
 
 # Build folders
-
-
+[Bb]in/
+[Dd]ebug/
+[Rr]elease/
+[xX]64/
+[xX]86/
+[Bb]uild/
+[Tt]emp/
 
 # Visual Studio cache, temporary and user files
 .vs/
@@ -13,3 +25,30 @@
 *.suo
 *.opendb
 *.VC.db
+
+# Logs and databases
+*.log
+*.bak
+*.ldb
+
+# Other files and folders
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.[Pp]ublish.xml
+[Tt]humbs.db
+[Dd]esktop.ini
+
+# Ignore shader files if they are generated
+*.glsl
+
+# Ignore model files if they are generated or downloaded
+*.mtl
+
+# Ignore configuration files that are specific to your environment
+*.config
+
+# Ignore files related to NFD (Native File Dialog) library, if they are generated
+# Add specific patterns if there are generated files
+
+# Additional ignores specific to your project
+# Add any other file types or directories specific to your project

@@ -31,7 +31,7 @@ bool myHalfedge::checkTwin()
 	//	return true;
 	//if (this->prev->twin != twin-> && this->next->prev != this)
 	//	return false;
-	//return true;
+	return true;
 }
 
 bool myHalfedge::checkLoop()

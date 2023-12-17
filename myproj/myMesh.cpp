@@ -205,18 +205,28 @@ void myMesh::simplify(int nb)
 
 void myMesh::findtwins()
 {
-	for(auto a : halfedges)
+	int max = halfedges.size();
+	int count = 0;
+	for(int i = 0; i < max; ++i)
 	{
-		if(a->twin == nullptr)
+		if(halfedges[i]->twin == nullptr)
 		{
-			for (auto b : halfedges)
+			for (int j = 0; j < max; ++j)
 			{
-				if (b->twin == nullptr && a != b)
+				if (halfedges[j]->twin == nullptr && i != j)
 				{
-					if (a->source->point == b->next->source->point && a->next->source->point == b->source->point)
+					if (
+						halfedges[i]->source->point->X == halfedges[j]->next->source->point->X && 
+						halfedges[i]->source->point->Y == halfedges[j]->next->source->point->Y && 
+						halfedges[i]->source->point->Z == halfedges[j]->next->source->point->Z && 
+						halfedges[i]->next->source->point->X == halfedges[j]->source->point->X &&
+						halfedges[i]->next->source->point->Y == halfedges[j]->source->point->Y &&
+						halfedges[i]->next->source->point->Z == halfedges[j]->source->point->Z
+						)
 					{
-						a->twin = b;
-						b->twin = a;
+						halfedges[i]->twin = halfedges[j];
+						halfedges[j]->twin = halfedges[i];
+						count++;
 						break;
 					}
 				}
@@ -361,17 +371,250 @@ void myMesh::splitEdge(myHalfedge *e1, myPoint3D *p)
 {
 
 	/**** TODO ****/
+	myPoint3D a = *(e1->source->point);
+	myPoint3D b = *(e1->next->source->point);
+
+	myPoint3D tmp;
+	tmp = ((a + b)/2);
+	*(p) = tmp;
 }
 
 void myMesh::splitFaceQUADS(myFace *f, myPoint3D *p)
 {
-	/**** TODO ****/
-}
+	auto start_he = f->adjacent_halfedge;
 
+	/**** TODO ****/
+	auto * point = findCenter(f);
+	auto * middle = new myVertex();
+	auto * face1 = new myFace();
+	auto * face2 = new myFace();
+	auto * face3 = new myFace();
+	auto * face4 = new myFace();
+
+	// Middle Edge points
+	auto * north = new myVertex();
+	auto * south = new myVertex();
+	auto * west = new myVertex();
+	auto * east = new myVertex();
+
+	middle->point = new myPoint3D();
+	north->point = new myPoint3D();
+	south->point = new myPoint3D();
+	west->point = new myPoint3D();
+	east->point = new myPoint3D();
+
+	middle->point = point;
+	splitEdge(start_he, south->point);
+	splitEdge(start_he->next, east->point);
+	splitEdge(start_he->next->next, north->point);
+	splitEdge(start_he->next->next->next, west->point);
+
+
+	
+	vertices.push_back(middle);
+
+	/** Quad 1 **/
+	auto * he1_1 = new myHalfedge();
+	auto * he1_2 = new myHalfedge();
+	auto * he1_3 = new myHalfedge();
+	auto * he1_4 = new myHalfedge();
+
+	he1_1->source = start_he->source;
+	he1_2->source = south;
+	he1_3->source = middle;
+	he1_4->source = west;
+
+	he1_1->next = he1_2;
+	he1_2->next = he1_3;
+	he1_3->next = he1_4;
+	he1_4->next = he1_1;
+
+	he1_1->prev = he1_4;
+	he1_2->prev = he1_1;
+	he1_3->prev = he1_2;
+	he1_4->prev = he1_3;
+
+	he1_1->adjacent_face = face1;
+	he1_2->adjacent_face = face1;
+	he1_3->adjacent_face = face1;
+	he1_4->adjacent_face = face1;
+
+	face1->adjacent_halfedge = he1_1;
+
+	south->originof = he1_1;
+	west->originof = he1_1;
+	middle->originof = he1_1;
+	start_he->source->originof = he1_1;
+
+
+	//// Quad 2
+	auto * he2_1 = new myHalfedge();
+	auto * he2_2 = new myHalfedge();
+	auto * he2_3 = new myHalfedge();
+	auto * he2_4 = new myHalfedge();
+
+	he2_1->source = south;
+	he2_2->source = start_he->next->source;
+	he2_3->source = east;
+	he2_4->source = middle;
+
+	he2_1->next = he2_2;
+	he2_2->next = he2_3;
+	he2_3->next = he2_4;
+	he2_4->next = he2_1;
+
+	he2_1->prev = he2_4;
+	he2_2->prev = he2_1;
+	he2_3->prev = he2_2;
+	he2_4->prev = he2_3;
+
+	he2_1->adjacent_face = face2;
+	he2_2->adjacent_face = face2;
+	he2_3->adjacent_face = face2;
+	he2_4->adjacent_face = face2;
+
+	face2->adjacent_halfedge = he2_1;
+
+	south->originof = he2_1;
+	east->originof = he2_1;
+	middle->originof = he2_1;
+	start_he->next->source->originof = he2_1;
+
+	//// Quad 3
+	auto * he3_1 = new myHalfedge();
+	auto * he3_2 = new myHalfedge();
+	auto * he3_3 = new myHalfedge();
+	auto * he3_4 = new myHalfedge();
+
+	he3_1->source = middle;
+	he3_2->source = east;
+	he3_3->source = start_he->next->next->source;
+	he3_4->source = north;
+
+	he3_1->next = he3_2;
+	he3_2->next = he3_3;
+	he3_3->next = he3_4;
+	he3_4->next = he3_1;
+
+	he3_1->prev = he3_4;
+	he3_2->prev = he3_1;
+	he3_3->prev = he3_2;
+	he3_4->prev = he3_3;
+
+	he3_1->adjacent_face = face3;
+	he3_2->adjacent_face = face3;
+	he3_3->adjacent_face = face3;
+	he3_4->adjacent_face = face3;
+
+	face3->adjacent_halfedge = he3_1;
+
+	north->originof = he3_1;
+	east->originof = he3_1;
+	middle->originof = he3_1;
+	start_he->next->next->source->originof = he3_1;
+
+	//// Quad 4
+	auto * he4_1 = new myHalfedge();
+	auto * he4_2 = new myHalfedge();
+	auto * he4_3 = new myHalfedge();
+	auto * he4_4 = new myHalfedge();
+
+	he4_1->source = west;
+	he4_2->source = middle;
+	he4_3->source = north;
+	he4_4->source = start_he->next->next->next->source;
+
+	he4_1->next = he4_2;
+	he4_2->next = he4_3;
+	he4_3->next = he4_4;
+	he4_4->next = he4_1;
+
+	he4_1->prev = he4_4;
+	he4_2->prev = he4_1;
+	he4_3->prev = he4_2;
+	he4_4->prev = he4_3;
+
+	he4_1->adjacent_face = face4;
+	he4_2->adjacent_face = face4;
+	he4_3->adjacent_face = face4;
+	he4_4->adjacent_face = face4;
+
+	face4->adjacent_halfedge = he4_1;
+
+	north->originof = he4_1;
+	west->originof = he4_1;
+	middle->originof = he4_1;
+	start_he->next->next->next->source->originof = he4_1;
+
+	he1_2->twin = he2_4;
+	he2_3->twin = he3_1;
+	he3_4->twin = he4_2;
+	he1_3->twin = he4_1;
+
+	he2_4->twin = he1_2;
+	he3_1->twin = he2_3;
+	he4_2->twin = he3_4;
+	he4_1->twin = he1_3;
+
+
+	vertices.push_back(south);
+	vertices.push_back(west);
+	vertices.push_back(east);
+	vertices.push_back(north);
+	vertices.push_back(middle);
+	faces.push_back(face1);
+	faces.push_back(face2);
+	faces.push_back(face3);
+	faces.push_back(face4);
+	halfedges.push_back(he1_1);
+	halfedges.push_back(he1_2);
+	halfedges.push_back(he1_3);
+	halfedges.push_back(he1_4);
+	halfedges.push_back(he2_1);
+	halfedges.push_back(he2_2);
+	halfedges.push_back(he2_3);
+	halfedges.push_back(he2_4);
+	halfedges.push_back(he3_1);
+	halfedges.push_back(he3_2);
+	halfedges.push_back(he3_3);
+	halfedges.push_back(he3_4);
+	halfedges.push_back(he4_1);
+	halfedges.push_back(he4_2);
+	halfedges.push_back(he4_3);
+	halfedges.push_back(he4_4);
+
+	halfedges.erase(remove(halfedges.begin(), halfedges.end(), start_he), halfedges.end());
+	halfedges.erase(remove(halfedges.begin(), halfedges.end(), start_he->next), halfedges.end());
+	halfedges.erase(remove(halfedges.begin(), halfedges.end(), start_he->next->next), halfedges.end());
+	halfedges.erase(remove(halfedges.begin(), halfedges.end(), start_he->next->next->next), halfedges.end());
+}
 
 void myMesh::subdivisionCatmullClark()
 {
 	/**** TODO ****/
+	vector<myFace*> todelete;
+	vector<myHalfedge*> he_delete;
+	vector<myFace*> tochange;
+
+	for (auto face : faces)
+	{
+		tochange.push_back(face);
+	}
+
+	for(auto face : tochange)
+	{
+		if(face != nullptr)
+		{
+			myPoint3D* tmp;
+			splitFaceQUADS(face, tmp);
+			todelete.push_back(face);
+		}
+	}
+	for(auto face : todelete)
+	{
+		faces.erase(remove(faces.begin(), faces.end(), face), faces.end());
+	}
+	findtwins();
 }
 
 void myMesh::test()
@@ -494,15 +737,15 @@ void myMesh::test()
 
 void myMesh::triangulate()
 {
-	while(!all_triangles())
-	{
+	//while(!all_triangles())
+	//{
 		for (auto* face : faces)
 		{
 			if (!check_triangle(face))
 				triangulate(face);
 		}
 		findtwins();
-	}
+	//}
 	cout << endl;
 }
 

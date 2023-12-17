@@ -26,9 +26,12 @@ void myVertex::computeNormal()
 	int i = 0;
 	do
 	{
-		i++;
-		tmp += *current->adjacent_face->normal;
-		current = current->twin->next;
+		if(current->twin != nullptr)
+		{
+			i++;
+			tmp += *current->adjacent_face->normal;
+			current = current->twin->next;
+		}
 	} while (current != start);
 	if(i > 0)
 	{

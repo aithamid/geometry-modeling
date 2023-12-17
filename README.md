@@ -27,34 +27,48 @@ Run the project with `Ctrl + F5`
 | Simplification | Yes  |  Medium   |:green_circle:|
 | ComputsNormals | Yes  |  Easy     |:green_circle:|
 | Silhouette | Yes      |  Easy     |:green_circle:|
-| Catmull-Clark | Yes   |  -        |:green_circle:|
+| Catmull-Clark | Yes   |  Hard        |:green_circle:|
 
 ### Tests
+
+I created a button to test my mesh.
+To deploy it `right click + Test`.
+
+<img src="images/Test-button.png" width="100">
+
+When you deploy it, you should have a diplay in a console like this.
+
+<img src="images/Test-screen.png" width="600">
+
 
 ## Work
 
 ### ReadFile
 
-<img src="images/ReadFile.png" width="500">
+<img src="images/ReadFile.png" width="300">
 
 ### ComputeNormals
-<img src="images/ComputeNormals.png" width="500">
+<img src="images/ComputeNormals.png" width="300">
 
 ### Triangulate
 
-<img src="images/Triangulate.png" width="500">
+<img src="images/Triangulate.png" width="300">
 
 ### Simplification
 
-<img src="images/SimplificationAfter.png" width="500">
+<img src="images/SimplificationAfter.png" width="300">
 
 ### Silhouette
 
-<img src="images/Silhouette.png" width="500">
+<img src="images/Silhouette.png" width="300">
 
 ### Catmull-Clark
 
-No photo for the moment
+<img src="images/Cat1.png" width="200">
+<img src="images/Cat2.png" width="200">
+<img src="images/Cat3.png" width="200">
+<img src="images/Cat4.png" width="200">
+
 
 
 

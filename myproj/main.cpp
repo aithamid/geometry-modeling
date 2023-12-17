@@ -394,7 +394,7 @@ void initMesh()
 
 	m = new myMesh();
 	drawwireframe = true;
-	if (m->readFile("cube.obj")) {
+	if (m->readFile("dolphin.obj")) {
 		m->computeNormals();
 		makeBuffers(m);
 	}

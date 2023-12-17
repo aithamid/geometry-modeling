@@ -1,6 +1,6 @@
 
 # Build folders
-[Bb]in/
+
 [Dd]ebug/
 [Rr]elease/
 [xX]64/
@@ -16,15 +16,3 @@
 *.suo
 *.opendb
 *.VC.db
-
-# Logs and databases
-*.log
-*.bak
-*.ldb
-
-# Other files and folders
-[Tt]est[Rr]esult*/
-[Bb]uild[Ll]og.*
-*.[Pp]ublish.xml
-[Tt]humbs.db
-[Dd]esktop.ini

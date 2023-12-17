@@ -203,6 +203,28 @@ void myMesh::simplify(int nb)
 	cout << "Size : " << nb << endl;
 }
 
+void myMesh::findtwins()
+{
+	for(auto a : halfedges)
+	{
+		if(a->twin == nullptr)
+		{
+			for (auto b : halfedges)
+			{
+				if (b->twin == nullptr && a != b)
+				{
+					if (a->source->point == b->next->source->point && a->next->source->point == b->source->point)
+					{
+						a->twin = b;
+						b->twin = a;
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
 myHalfedge * myMesh::minhedges()
 {
 	myHalfedge* min = nullptr;
@@ -325,10 +347,7 @@ myPoint3D* myMesh::findCenter(myFace* face)
 	center->X /= i;
 	center->Y /= i;
 	center->Z /= i;
-	
-	cout << center->X << endl;
-	cout << center->Y << endl;
-	cout << center->Z << endl;
+
 	return center;
 }
 
@@ -416,15 +435,16 @@ void myMesh::test()
 
 		std::cout << std::left << std::setw(50) << "- Check Twin Link" << ": ";
 		tmp = true;
+		int nottwin = 0;
 		for (auto it = halfedges.begin(); it != halfedges.end(); it++)
 		{
 			if ((*it)->twin == NULL)
 			{
 				tmp = false;
-				break;
+				nottwin++;
 			}
 		}
-		std::cout << (tmp ? PASSED : FAILED) << std::endl;
+		std::cout << (tmp ? PASSED : FAILED) << " (" << halfedges.size() - nottwin<< "/"<< halfedges.size() <<")"<< std::endl;
 
 		std::cout << std::left << std::setw(50) << "- Check Loop" << ": ";
 		tmp = true;
@@ -474,103 +494,99 @@ void myMesh::test()
 
 void myMesh::triangulate()
 {
-	vector<myFace*> new_faces;
-	vector<myFace*> to_erase_faces;
-	vector<myHalfedge*> to_erase_edges;
-
-	for (auto* face : faces)
+	while(!all_triangles())
 	{
-		if(triangulate(face))
+		for (auto* face : faces)
 		{
-			myHalfedge * start_e = face->adjacent_halfedge;
-			myHalfedge* current_e = start_e;
-
-			// Find my center point
-			auto* point = findCenter(face);
-			auto* vertex = new myVertex();
-			vertex->originof = start_e;
-			vertex->point = point;
-			vertices.push_back(vertex);
-			myHalfedge* montwin = nullptr;
-			do
-			{
-				// Create a new face
-				auto * new_face = new myFace();
-				new_face->adjacent_halfedge = current_e;
-
-				// Create triangle for half-edge
-				auto* o_to_c = new myHalfedge();
-				auto* c_to_n = new myHalfedge();
-				auto* n_to_o = new myHalfedge();
-
-				// Relation between half-edge and face
-				o_to_c->adjacent_face = new_face;
-				c_to_n->adjacent_face = new_face;
-				n_to_o->adjacent_face = new_face;
-				new_face->adjacent_halfedge = o_to_c;
-
-				// Set the vertex
-				o_to_c->source = current_e->source;
-				c_to_n->source = vertex;
-				n_to_o->source = current_e->next->source;
-
-				// Relation between half-edges
-				// Next 
-				o_to_c->next = c_to_n;
-				c_to_n->next = n_to_o;
-				n_to_o->next = o_to_c;
-				// Prev
-				o_to_c->prev = n_to_o;
-				c_to_n->prev = o_to_c;
-				n_to_o->prev = c_to_n;
-
-				// Connect the twins
-				//o_to_c->twin = montwin;
-				//montwin = c_to_n;
-				//n_to_o->twin = start_e->twin;
-
-				// Add half-edge in list
-				halfedges.push_back(o_to_c);
-				halfedges.push_back(c_to_n);
-				halfedges.push_back(n_to_o);
-
-				// Add face in list
-				new_faces.push_back(new_face);
-
-				cout << "new face" << endl;
-				current_e = current_e->next;
-			} while (current_e != start_e);
-			to_erase_faces.push_back(face);
-			to_erase_edges.push_back(face->adjacent_halfedge);
-			to_erase_edges.push_back(face->adjacent_halfedge->twin);
-			to_erase_edges.push_back(face->adjacent_halfedge->prev);
-			to_erase_edges.push_back(face->adjacent_halfedge->next);
-		} 
+			if (!check_triangle(face))
+				triangulate(face);
+		}
+		findtwins();
 	}
-
-	for (myHalfedge* edge : to_erase_edges)
-		halfedges.erase(remove(halfedges.begin(), halfedges.end(), edge), halfedges.end());
-
-	for (myFace* face : to_erase_faces)
-		faces.erase(remove(faces.begin(), faces.end(), face), faces.end());
-
-	for (myFace* face : new_faces)
-		faces.push_back(face);
-
 	cout << endl;
 }
 
 //return false if already triangle, true othewise.
 bool myMesh::triangulate(myFace *f)
 {
-	const myHalfedge* start_edge = f->adjacent_halfedge;
-	const myHalfedge* final_edge = start_edge->next->next->next;
+	myHalfedge* start_edge = f->adjacent_halfedge;
+	myHalfedge* final_edge = start_edge->next->next->next;
 
-	if (start_edge != final_edge)
+	// Check if the face is a triangle
+	if (start_edge == final_edge) {return false;}
+	
+	auto current = start_edge->next;
+	int nb;
+	for(nb = 1; start_edge != current; nb++)
 	{
-		return true;
+		current = current->next;
 	}
 
+	auto middle = new myVertex();
+	middle->point = findCenter(f);
+
+	// here the current one is the start edge
+	auto next = current;
+	for(int i = 0; i < nb; i++)
+	{
+		auto a = current->next->source;
+		auto b = current->source;
+		next = current->next; // for the next face
+
+		auto newFace = new myFace();
+		auto toMiddle = new myHalfedge();
+		auto fromMiddle = new myHalfedge();
+
+		faces.push_back(newFace);
+		halfedges.push_back(toMiddle);
+		halfedges.push_back(fromMiddle);
+
+		toMiddle->source = a;
+		fromMiddle->source = middle;
+
+		a->originof = toMiddle;
+		b->originof = current;
+		middle->originof = fromMiddle;
+
+		current->next = toMiddle;
+		toMiddle->next = fromMiddle;
+		fromMiddle->next = current;
+
+		current->prev = fromMiddle;
+		toMiddle->prev = current;
+		fromMiddle->prev = toMiddle;
+
+		current->adjacent_face = newFace;
+		toMiddle->adjacent_face = newFace;
+		fromMiddle->adjacent_face = newFace;
+		newFace->adjacent_halfedge = fromMiddle;
+		current = next;
+		faces.erase(remove(faces.begin(), faces.end(), f), faces.end());
+	}
+	vertices.push_back(middle);
+	findtwins();
+	return true;
+}
+
+
+bool myMesh::check_triangle(myFace * f)
+{
+	myHalfedge* start_edge = f->adjacent_halfedge;
+	myHalfedge* final_edge = start_edge->next->next->next;
+
+	// Check if the face is a triangle
+	if (start_edge == final_edge) { return true; }
 	return false;
 }
 
+bool myMesh::all_triangles()
+{
+	for(auto face : faces)
+	{
+		if(!check_triangle(face))
+		{
+			return false;
+		}
+	}
+	return true;
+}

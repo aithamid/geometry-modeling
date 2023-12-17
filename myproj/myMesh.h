@@ -21,7 +21,7 @@ public:
 	void simplify(int nb);
 	myHalfedge* minhedges();
 	void normalize();
-
+	void findtwins();
 	myPoint3D* findCenter(myFace* face);
 
 	void subdivisionCatmullClark();
@@ -33,6 +33,8 @@ public:
 
 	void triangulate();
 	bool triangulate(myFace *);
+	bool check_triangle(myFace*);
+	bool all_triangles();
 
 	void clear();
 	void test();

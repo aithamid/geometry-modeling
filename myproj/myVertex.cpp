@@ -20,7 +20,7 @@ myVertex::~myVertex(void)
 
 void myVertex::computeNormal()
 {
-	const auto* start = originof;
+	auto* start = originof;
 	auto* current = start;
 	myVector3D tmp(0,0,0);
 	int i = 0;
@@ -35,7 +35,7 @@ void myVertex::computeNormal()
 		tmp = tmp / static_cast<double>(i);
 	}
 	tmp.normalize();
-	*normal = tmp;
+	normal = new myVector3D(tmp);
 }
 
 /*

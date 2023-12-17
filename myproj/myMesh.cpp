@@ -849,15 +849,15 @@ void myMesh::test()
 
 void myMesh::triangulate()
 {
-	//while(!all_triangles())
-	//{
+	while(!all_triangles())
+	{
 		for (auto* face : faces)
 		{
 			if (!check_triangle(face))
 				triangulate(face);
 		}
 		findtwins();
-	//}
+	}
 	cout << endl;
 }
 

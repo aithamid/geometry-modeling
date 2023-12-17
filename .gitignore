@@ -1,10 +1,7 @@
 
 # Build folders
 
-[Dd]ebug/
-[Rr]elease/
-[xX]64/
-[xX]86/
+
 
 # Visual Studio cache, temporary and user files
 .vs/

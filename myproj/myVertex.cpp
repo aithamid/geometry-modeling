@@ -11,6 +11,7 @@ myVertex::myVertex(void)
 	point = NULL;
 	originof = NULL;
 	normal = new myVector3D(1.0,1.0,1.0);
+	label = 'p';
 }
 
 myVertex::~myVertex(void)

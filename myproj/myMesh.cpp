@@ -403,6 +403,12 @@ void myMesh::splitFaceQUADS(myFace *f, myPoint3D *p)
 	west->point = new myPoint3D();
 	east->point = new myPoint3D();
 
+	middle->label = 'f';
+	north->label = 'e';
+	south->label = 'e';
+	west->label = 'e';
+	east->label = 'e';
+
 	middle->point = point;
 	splitEdge(start_he, south->point);
 	splitEdge(start_he->next, east->point);
@@ -441,9 +447,9 @@ void myMesh::splitFaceQUADS(myFace *f, myPoint3D *p)
 
 	face1->adjacent_halfedge = he1_1;
 
-	south->originof = he1_1;
-	west->originof = he1_1;
-	middle->originof = he1_1;
+	south->originof = he1_2;
+	west->originof = he1_4;
+	middle->originof = he1_3;
 	start_he->source->originof = he1_1;
 
 
@@ -476,9 +482,9 @@ void myMesh::splitFaceQUADS(myFace *f, myPoint3D *p)
 	face2->adjacent_halfedge = he2_1;
 
 	south->originof = he2_1;
-	east->originof = he2_1;
-	middle->originof = he2_1;
-	start_he->next->source->originof = he2_1;
+	east->originof = he2_3;
+	middle->originof = he2_4;
+	start_he->next->source->originof = he2_2;
 
 	//// Quad 3
 	auto * he3_1 = new myHalfedge();
@@ -508,10 +514,10 @@ void myMesh::splitFaceQUADS(myFace *f, myPoint3D *p)
 
 	face3->adjacent_halfedge = he3_1;
 
-	north->originof = he3_1;
-	east->originof = he3_1;
+	north->originof = he3_4;
+	east->originof = he3_2;
 	middle->originof = he3_1;
-	start_he->next->next->source->originof = he3_1;
+	start_he->next->next->source->originof = he3_3;
 
 	//// Quad 4
 	auto * he4_1 = new myHalfedge();
@@ -541,10 +547,10 @@ void myMesh::splitFaceQUADS(myFace *f, myPoint3D *p)
 
 	face4->adjacent_halfedge = he4_1;
 
-	north->originof = he4_1;
+	north->originof = he4_3;
 	west->originof = he4_1;
-	middle->originof = he4_1;
-	start_he->next->next->next->source->originof = he4_1;
+	middle->originof = he4_2;
+	start_he->next->next->next->source->originof = he4_4;
 
 	he1_2->twin = he2_4;
 	he2_3->twin = he3_1;
@@ -589,6 +595,89 @@ void myMesh::splitFaceQUADS(myFace *f, myPoint3D *p)
 	halfedges.erase(remove(halfedges.begin(), halfedges.end(), start_he->next->next->next), halfedges.end());
 }
 
+std::map<myVertex*, myPoint3D> myMesh::newedge_catmull()
+{
+	std::map<myVertex *, myPoint3D> dictionary;
+	for(auto * edgepoint : vertices)
+	{
+		if (edgepoint->label == 'e')
+		{
+			auto* start = edgepoint->originof;
+			auto* current = start;
+			int i = 0;
+			myPoint3D tmp(0, 0, 0);
+			do
+			{
+				i++;
+				tmp += *(current->next->source->point);
+				if (current->twin == nullptr)
+					break;
+				current = current->twin->next;
+			} while (start != current);
+			tmp /= i;
+			dictionary[edgepoint] = tmp;
+		}
+	}
+	return dictionary;
+}
+
+std::map<myVertex*, myPoint3D> myMesh::newpoint_catmull()
+{
+	std::map<myVertex*, myPoint3D> dictionary;
+	for (auto* edgepoint : vertices)
+	{
+		if (edgepoint->label == 'p')
+		{
+			myPoint3D pnew(0, 0, 0);
+			myPoint3D Q(0, 0, 0);
+			myPoint3D R(0, 0, 0);
+			myPoint3D S(0, 0, 0);
+
+			auto* start = edgepoint->originof;
+			auto* current = start;
+			int n = 0;
+			int i = 0;
+
+			// Calcul Q
+			do
+			{
+				n++;
+				if (current->next->next->source->label == 'f')
+				{
+					i++;
+					Q += *(current->next->next->source->point);
+					if (current->twin == nullptr)
+						break;
+					current = current->twin->next;
+				}
+			} while (start != current);
+			Q /= i;
+
+			current = start;
+			// Calcul R
+			i = 0;
+			do
+			{
+				if (current->next->source->label == 'e')
+				{
+					i++;
+					R += *(current->next->source->point);
+					if (current->twin == nullptr)
+						break;
+					current = current->twin->next;
+				}
+			} while (start != current);
+			R /= i;
+
+			S = *(edgepoint->point);
+
+			dictionary[edgepoint] = (Q + (R * 2) + S * (n - 3)) / n;
+		}
+	}
+	return dictionary;
+}
+
+
 void myMesh::subdivisionCatmullClark()
 {
 	/**** TODO ****/
@@ -615,6 +704,29 @@ void myMesh::subdivisionCatmullClark()
 		faces.erase(remove(faces.begin(), faces.end(), face), faces.end());
 	}
 	findtwins();
+
+	std::map<myVertex*, myPoint3D> edges = newedge_catmull();
+	
+	std::map<myVertex*, myPoint3D> points = newpoint_catmull();
+
+	for(auto pair : edges)
+	{
+		*(pair.first->point) = pair.second;
+	}
+
+	for (auto pair : points)
+	{
+		*(pair.first->point) = pair.second;
+	}
+
+	edges.clear();
+	points.clear();
+
+	// reset edge labeling 
+	for(auto * v : vertices)
+	{
+		v->label = 'p'; 
+	}
 }
 
 void myMesh::test()

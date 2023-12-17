@@ -1,4 +1,7 @@
 #pragma once
+
+#include <map>
+
 #include "myFace.h"
 #include "myHalfedge.h"
 #include "myVertex.h"
@@ -35,6 +38,8 @@ public:
 	bool triangulate(myFace *);
 	bool check_triangle(myFace*);
 	bool all_triangles();
+	std::map<myVertex*, myPoint3D> newedge_catmull();
+	std::map<myVertex*, myPoint3D> newpoint_catmull();
 
 	void clear();
 	void test();

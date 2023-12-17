@@ -9,6 +9,7 @@ class myVertex
 public:
 	myPoint3D *point;
 	myHalfedge *originof;
+	char label;
 
 	int index;  //use as you wish.
 
